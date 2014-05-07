@@ -46,12 +46,19 @@
 /* This will be overridden by board-specific irq headers */
 #define IRQ_BOARD_END			IRQ_BOARD_START
 
+#include <mach/irqs-db5500.h>
 #include <mach/irqs-db8500.h>
 #include <mach/irqs-db9540.h>
 #include <mach/irqs-db8540.h>
 
-#ifdef CONFIG_MACH_UX500
+#ifdef CONFIG_MACH_U8500
 #include <mach/irqs-board-mop500.h>
+#else
+#include <mach/irqs-board-semc.h>
+#endif
+
+#ifdef CONFIG_MACH_U5500
+#include <mach/irqs-board-u5500.h>
 #endif
 
 #ifndef NR_IRQS
