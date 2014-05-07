@@ -1937,10 +1937,10 @@ U8500_I2C_CONTROLLER(3,	0xe, 1, 8, 400000, 200, I2C_FREQ_MODE_FAST);
 
 static void __init mop500_i2c_init(void)
 {
-	db8500_add_i2c0(parent, &u8500_i2c0_data);
-	db8500_add_i2c1(parent, &u8500_i2c1_data);
-	db8500_add_i2c2(parent, &u8500_i2c2_data);
-	db8500_add_i2c3(parent, &u8500_i2c3_data);
+	db8500_add_i2c0(&u8500_i2c0_data);
+	db8500_add_i2c1(&u8500_i2c1_data);
+	db8500_add_i2c2(&u8500_i2c2_data);
+	db8500_add_i2c3(&u8500_i2c3_data);
 }
 
 /*
@@ -2252,7 +2252,7 @@ static struct stm_msp_controller pdp_msp2_spi_data = {
 
 static void __init mop500_spi_init(void)
 {
-	db8500_add_msp2_spi(parent, &pdp_msp2_spi_data);
+	db8500_add_msp2_spi(&pdp_msp2_spi_data);
 #if defined(CONFIG_TOUCHSCREEN_CYTTSP_SPI) ||			\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR) ||	\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR_MODULE)
@@ -2396,9 +2396,9 @@ static struct amba_pl011_data uart2_plat = {
 
 static void __init mop500_uart_init(void)
 {
-	db8500_add_uart0(parent, &uart0_plat);
-	db8500_add_uart1(parent, &uart1_plat);
-	db8500_add_uart2(parent, &uart2_plat);
+	db8500_add_uart0(&uart0_plat);
+	db8500_add_uart1(&uart1_plat);
+	db8500_add_uart2(&uart2_plat);
 }
 
 #define CONSOLE_NAME "ttyAMA"
@@ -2435,8 +2435,8 @@ static void __init cyttsp_data_set_callbacks(struct cyttsp_platform_data *pdata)
 
 static void __init u8500_cryp1_hash1_init(void)
 {
-	db8500_add_cryp1(parent, &u8500_cryp1_platform_data);
-	db8500_add_hash1(parent, &u8500_hash1_platform_data);
+	db8500_add_cryp1(&u8500_cryp1_platform_data);
+	db8500_add_hash1(&u8500_hash1_platform_data);
 }
 
 static void __init mop500_init_machine(void)
