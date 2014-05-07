@@ -66,7 +66,7 @@
 #include <asm/mach/arch.h>
 
 #include <plat/gpio-nomadik.h>
-#include <plat/i2c.h>
+#include <linux/platform_data/i2c-nomadik.h>
 #include <plat/ste_dma40.h>
 #include <plat/pincfg.h>
 
