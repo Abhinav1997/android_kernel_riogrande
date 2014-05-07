@@ -1935,12 +1935,12 @@ U8500_I2C_CONTROLLER(1, 0xe, 1, 8, 400000, 200, I2C_FREQ_MODE_FAST);
 U8500_I2C_CONTROLLER(2,	0xe, 1, 8, 400000, 200, I2C_FREQ_MODE_FAST);
 U8500_I2C_CONTROLLER(3,	0xe, 1, 8, 400000, 200, I2C_FREQ_MODE_FAST);
 
-static void __init mop500_i2c_init(void)
+static void __init mop500_i2c_init(struct device *parent)
 {
-	db8500_add_i2c0(&u8500_i2c0_data);
-	db8500_add_i2c1(&u8500_i2c1_data);
-	db8500_add_i2c2(&u8500_i2c2_data);
-	db8500_add_i2c3(&u8500_i2c3_data);
+	db8500_add_i2c0(parent, &u8500_i2c0_data);
+	db8500_add_i2c1(parent, &u8500_i2c1_data);
+	db8500_add_i2c2(parent, &u8500_i2c2_data);
+	db8500_add_i2c3(parent, &u8500_i2c3_data);
 }
 
 /*
@@ -2250,9 +2250,9 @@ static struct stm_msp_controller pdp_msp2_spi_data = {
 	.device_name	= "msp2",
 };
 
-static void __init mop500_spi_init(void)
+static void __init mop500_spi_init(struct device *parent)
 {
-	db8500_add_msp2_spi(&pdp_msp2_spi_data);
+	db8500_add_msp2_spi(parent, &pdp_msp2_spi_data);
 #if defined(CONFIG_TOUCHSCREEN_CYTTSP_SPI) ||			\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR) ||	\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR_MODULE)
@@ -2394,11 +2394,11 @@ static struct amba_pl011_data uart2_plat = {
 #endif
 };
 
-static void __init mop500_uart_init(void)
+static void __init mop500_uart_init(struct device *parent)
 {
-	db8500_add_uart0(&uart0_plat);
-	db8500_add_uart1(&uart1_plat);
-	db8500_add_uart2(&uart2_plat);
+	db8500_add_uart0(parent, &uart0_plat);
+	db8500_add_uart1(parent, &uart1_plat);
+	db8500_add_uart2(parent, &uart2_plat);
 }
 
 #define CONSOLE_NAME "ttyAMA"
@@ -2433,21 +2433,23 @@ static void __init cyttsp_data_set_callbacks(struct cyttsp_platform_data *pdata)
 }
 #endif /* CONFIG_TOUCHSCREEN_CYTTSP_SPI */
 
-static void __init u8500_cryp1_hash1_init(void)
+static void __init u8500_cryp1_hash1_init(struct device *parent)
 {
-	db8500_add_cryp1(&u8500_cryp1_platform_data);
-	db8500_add_hash1(&u8500_hash1_platform_data);
+	db8500_add_cryp1(parent, &u8500_cryp1_platform_data);
+	db8500_add_hash1(parent, &u8500_hash1_platform_data);
 }
 
 static void __init mop500_init_machine(void)
 {
+	struct device *parent = NULL;
+
 	u8500_init_devices();
 
 	mop500_pins_init();
 
 	mop500_regulator_init();
 
-	u8500_cryp1_hash1_init();
+	u8500_cryp1_hash1_init(parent);
 
 #ifdef CONFIG_HSI
 	hsi_register_board_info(u8500_hsi_devices,
@@ -2456,12 +2458,12 @@ static void __init mop500_init_machine(void)
 	platform_add_devices(mop500_platform_devs,
 				ARRAY_SIZE(mop500_platform_devs));
 
-	mop500_i2c_init();
-	mop500_msp_init();
-	mop500_spi_init();
-	mop500_uart_init();
+	mop500_i2c_init(parent);
+	mop500_msp_init(parent);
+	mop500_spi_init(parent);
+	mop500_uart_init(parent);
 	mop500_wlan_init();
-	mop500_sdi_init();
+	mop500_sdi_init(parent);
 
 #ifdef CONFIG_TOUCHSCREEN_CYTTSP_SPI
 	cyttsp_data_set_callbacks(&cyttsp_data);
@@ -2474,7 +2476,8 @@ static void __init mop500_init_machine(void)
 	 */
 	if (!(prcmu_read(PRCM_DEBUG_NOPWRDOWN_VAL) &
 	      ARM_DEBUG_NOPOWER_DOWN_REQ))
-		db8500_add_ske_keypad(get_ske_keypad_data());
+		db8500_add_ske_keypad(NULL, &get_ske_keypad_data,
+				sizeof(get_ske_keypad_data));
 #endif
 
 #ifdef CONFIG_ANDROID_STE_TIMED_VIBRA
