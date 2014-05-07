@@ -78,7 +78,7 @@
 #ifdef CONFIG_U8500_SIM_DETECT
 #include <mach/sim_detect.h>
 #endif
-#include <mach/crypto-ux500.h>
+#include <linux/platform_data/crypto-ux500.h>
 #include <mach/pm.h>
 
 #ifdef CONFIG_AV8100
