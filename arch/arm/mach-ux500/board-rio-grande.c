@@ -402,8 +402,6 @@ failed:
 }
 
 static struct av8100_platform_data av8100_plat_data = {
-	.init			= av8100_plat_init,
-	.exit			= av8100_plat_exit,
 	.irq			= NOMADIK_GPIO_TO_IRQ(192),
 	.reset			= MOP500_HDMI_RST_GPIO,
 	.inputclk_id		= "sysclk2",
@@ -2375,7 +2373,6 @@ static struct amba_pl011_data uart0_plat = {
 #endif
 	.init = ux500_uart0_init,
 	.exit = ux500_uart0_exit,
-	.reset = ux500_uart0_reset,
 };
 
 static struct amba_pl011_data uart1_plat = {
