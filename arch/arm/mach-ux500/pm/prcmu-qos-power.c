@@ -22,6 +22,7 @@
 #include <linux/cpufreq.h>
 #include <linux/mfd/dbx500-prcmu.h>
 #include <linux/seq_file.h>
+#include <linux/mfd/abx500/ab8500.h>
 
 #include <mach/prcmu-debug.h>
 
