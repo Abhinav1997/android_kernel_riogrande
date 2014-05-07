@@ -28,6 +28,13 @@ endmenu
 
 menu "Ux500 target platform (boards)"
 
+config MACH_U8500_NYPON
+	bool "Sony Ericsson Nypon"
+	select WLAN_PMUEN_UX500
+	select CW1200_USE_GPIO_IRQ
+	help
+	  Support for Sony Ericsson Nypon devices.
+
 config MACH_UX500
 	bool "Ux500 Development platform"
 	depends on UX500_SOC_DB8500

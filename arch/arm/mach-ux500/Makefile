@@ -28,6 +28,17 @@ obj-$(CONFIG_MACH_U8500)	+= board-mop500.o \
 				board-mop500-pins.o \
 				board-mop500-rmi4.o
 
++obj-$(CONFIG_MACH_U8500_NYPON)  += board-rio-grande.o board-rio-grande-sdi.o \
+				board-mop500-regulators.o \
+				gpio-nypon.o \
+				board-mop500-msp.o board-mop500-bm.o \
+				board-rio-grande-mmio.o board-mop500-wlan.o \
+				simple_remote-rio-grande_r2.o \
+				input-nypon.o leds-nypon.o \
+				display-nypon.o sim_detect_semc.o \
+				charger-nypon.o \
+				board-mop500-vibra-nypon.o
+
 obj-$(CONFIG_MACH_CCU9540)	+=  board-ccu9540.o \
 				board-ccux540-ver.o \
 				board-ccu9540-regulators.o \
