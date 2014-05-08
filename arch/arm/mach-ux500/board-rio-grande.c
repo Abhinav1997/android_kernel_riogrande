@@ -2255,7 +2255,7 @@ static void __init mop500_spi_init(struct device *parent)
 #if defined(CONFIG_TOUCHSCREEN_CYTTSP_SPI) ||			\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR) ||	\
 	defined(CONFIG_SEMC_GENERIC_RMI4_SPI_ADAPTOR_MODULE)
-	db8500_add_spi3(&pdp_spi3_data);
+	db8500_add_spi3(parent, &pdp_spi3_data);
 #endif
 }
 
