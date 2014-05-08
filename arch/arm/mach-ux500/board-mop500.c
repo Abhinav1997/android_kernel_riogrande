@@ -1263,6 +1263,7 @@ static void __init mop500_init_machine(void)
 	u8500_tee_init();
 	u8500_init_devices();
 
+	mop500_pins_init();
 	mop500_pinmaps_init();
 	dbx500_add_pinctrl(parent, "pinctrl-db8500");
 
