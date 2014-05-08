@@ -30,6 +30,7 @@ typedef int (*timed_vibra_control_fp)(
  */
 struct ste_timed_vibra_platform_data {
 	bool is_linear_vibra;
+	bool reverse_polarity;
 	unsigned int boost_level;	/* p1 */
 	unsigned int boost_time;	/* p2 */
 	unsigned int on_level;		/* p3 */
