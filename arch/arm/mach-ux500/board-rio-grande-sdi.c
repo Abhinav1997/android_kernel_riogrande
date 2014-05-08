@@ -334,19 +334,19 @@ static struct mmci_platform_data mop500_sdi4_data = {
 #endif
 };
 
-void __init mop500_sdi_init(void)
+void __init mop500_sdi_init(struct device *parent)
 {
 	u32 periphid = 0x10480180;
 
 	/* POPed eMMC */
-	db8500_add_sdi2(&mop500_sdi2_data, periphid);
+	db8500_add_sdi2(parent, &mop500_sdi2_data, periphid);
 
 	/* On-board eMMC */
-	db8500_add_sdi4(&mop500_sdi4_data, periphid);
+	db8500_add_sdi4(parent, &mop500_sdi4_data, periphid);
 
 	/* WLAN */
 	sdi1_configure();
-	db8500_add_sdi1(&mop500_sdi1_data, periphid);
+	db8500_add_sdi1(parent, &mop500_sdi1_data, periphid);
 
 #ifdef CONFIG_U8500_SD_MMC_CARD_SUPPORT
 	/* SD/MMC card */
