@@ -188,7 +188,7 @@ static u32 _kernel_page_allocate(void)
 
 	if ( NULL == new_page )
 	{
-		return 0xDEADBEEF;
+		return 0;
 	}
 
 	/* Ensure page is flushed from CPU caches. */
@@ -234,7 +234,7 @@ static AllocationList * _allocation_list_item_get(void)
 	}
 
 	item->physaddr = _kernel_page_allocate();
-	if ( 0xDEADBEEF == item->physaddr )
+	if ( 0 == item->physaddr )
 	{
 		/* Non-fatal error condition, out of memory. Upper levels will handle this. */
 		_mali_osk_free( item );

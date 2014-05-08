@@ -68,10 +68,6 @@ extern int mali_l2_max_reads;
 module_param(mali_l2_max_reads, int, S_IRUSR | S_IRGRP | S_IROTH);
 MODULE_PARM_DESC(mali_l2_max_reads, "Maximum reads for Mali L2 cache");
 
-extern int mali_oskmem_allocorder;
-module_param(mali_oskmem_allocorder, int, S_IRUSR | S_IWUSR | S_IWGRP | S_IRGRP | S_IROTH);
-MODULE_PARM_DESC(mali_utilization_sampling_rate, "Mali OS kernel memory allocation order");
-
 #if MALI_TIMELINE_PROFILING_ENABLED
 extern int mali_boot_profiling;
 module_param(mali_boot_profiling, int, S_IRUSR | S_IRGRP | S_IROTH);
@@ -117,12 +113,15 @@ extern struct platform_driver mali_plat_driver;
 
 static int __init mali_driver_init(void)
 {
+	int ret = 0;
+
 	MALI_DEBUG_PRINT(2, ("\n"));
 	MALI_DEBUG_PRINT(2, ("Inserting Mali v%d device driver. \n",_MALI_API_VERSION));
 	MALI_DEBUG_PRINT(2, ("Compiled: %s, time: %s.\n", __DATE__, __TIME__));
 	MALI_DEBUG_PRINT(2, ("Driver revision: %s\n", SVN_REV_STRING));
 
 	return platform_driver_register(&mali_plat_driver);
+
 }
 
 int init_mali(void)
@@ -157,7 +156,7 @@ platform_init_failed:
 	terminate_kernel_device();
 initialize_kernel_device_failed:
 	_mali_dev_platform_unregister();
-//platform_register_failed:
+platform_register_failed:
 	return ret;
 }
 
