@@ -16,6 +16,17 @@ obj-$(CONFIG_UX500_SOC_DBX500)	+= cpu-db8500.o devices-db8500.o \
 board-mcde-objs			+= board-mop500-mcde.o board-ccu9540-mcde.o
 endif
 
+obj-$(CONFIG_MACH_U8500_KUMQUAT)  += board-rio-grande.o board-rio-grande-sdi.o \
+				board-mop500-regulators.o \
+				gpio-kumquat.o \
+				board-mop500-msp.o board-mop500-bm.o \
+				board-rio-grande-mmio.o board-mop500-wlan.o \
+				simple_remote-rio-grande.o \
+				input-kumquat.o leds-kumquat.o \
+				display-rio-grande.o sim_detect_semc.o \
+				charger-kumquat.o \
+				board-mop500-vibra.o
+
 obj-$(CONFIG_MACH_U8500_NYPON)  += board-rio-grande.o board-rio-grande-sdi.o \
 				board-mop500-regulators.o \
 				gpio-nypon.o \
