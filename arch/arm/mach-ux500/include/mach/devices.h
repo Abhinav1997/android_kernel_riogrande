@@ -35,6 +35,8 @@ extern struct platform_device mloader_fw_device;
 extern struct platform_device ux500_ske_keypad_device;
 extern struct platform_device u8500_hsi_device;
 extern struct platform_device ux500_mmio_device;
+extern struct platform_device u5500_mmio_device;
+
 extern struct platform_device ux500_mmio_raw_device;
 extern struct platform_device ux500_mmio_yuv_device;
 extern struct platform_device db8500_cpuidle_device;

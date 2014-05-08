@@ -1,0 +1,2 @@
+Script started on Thu 08 May 2014 08:07:04 AM UTC
+bash: ./Com*Ra*: No such file or directory

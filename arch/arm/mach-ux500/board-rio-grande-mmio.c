@@ -672,11 +672,3 @@ static struct mmio_platform_data mmio_config = {
 	.cr_base = U8500_CR_BASE
 };
 
-
-struct platform_device ux500_mmio_device = {
-	.name = MMIO_NAME,
-	.id = -1,
-	.dev = {
-		.platform_data = &mmio_config,
-	}
-};
