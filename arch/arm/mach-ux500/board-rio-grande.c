@@ -22,6 +22,7 @@
 #include <linux/hsi/hsi.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/abx500.h>
+#include <linux/mfd/ab3550.h>
 #include <linux/regulator/ab8500.h>
 #include <linux/mfd/tc3589x.h>
 #include <linux/mfd/abx500/ab8500-gpio.h>
@@ -2513,7 +2514,6 @@ int pins_for_u9500(void)
 
 MACHINE_START(NOMADIK, "riogrande")
 	/* Maintainer: Sony Ericsson */
-	.boot_params	= 0x00000100,
 	.map_io		= u8500_map_io,
 	.reserve	= riogrande_reserve,
 	.init_irq	= ux500_init_irq,
