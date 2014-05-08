@@ -21,7 +21,6 @@ static struct ste_timed_vibra_platform_data rotary_vibra_plat_data = {
 	.on_level       = 100,
 	.off_level      = 100,
 	.off_time       = 60,
-	.timed_vibra_control = ux500_ab850x_audio_pwm_vibra,
 };
 
 static struct ste_timed_vibra_platform_data linear_vibra_plat_data = {
@@ -31,7 +30,6 @@ static struct ste_timed_vibra_platform_data linear_vibra_plat_data = {
 	.on_level       = 80,
 	.off_level      = 80,
 	.off_time       = 30,
-	.timed_vibra_control = ux500_ab850x_audio_pwm_vibra,
 };
 
 /* Timed output vibrator device */
