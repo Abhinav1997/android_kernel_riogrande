@@ -28,6 +28,7 @@
 #include <video/mcde_dss.h>
 #include <linux/mfd/dbx500-prcmu.h>
 #include <mach/display_panel.h>
+#include <mach/id.h>
 #include <plat/pincfg.h>
 #include "pins-db8500.h"
 #include "pins.h"
