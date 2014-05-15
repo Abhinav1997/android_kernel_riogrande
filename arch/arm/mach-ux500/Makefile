@@ -13,7 +13,7 @@ ifeq ($(CONFIG_UX500_SOC_DB8500), y)
 
 obj-$(CONFIG_UX500_SOC_DBX500)	+= cpu-db8500.o devices-db8500.o \
 				   clock-db8500.o dma-db8500.o
-board-mcde-objs			+= board-mop500-mcde.o board-ccu9540-mcde.o
+board-mcde-objs			+= board-rio-grande-mcde.o
 endif
 
 obj-$(CONFIG_MACH_U8500_KUMQUAT)  += board-rio-grande.o board-rio-grande-sdi.o \
