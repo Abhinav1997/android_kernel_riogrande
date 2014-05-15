@@ -23,7 +23,6 @@
 struct mcde_display_dsi_platform_data {
 	int reset_gpio;
 	int link;
-	u8 num_data_lanes;
 };
 
 #define to_mcde_display_device(__dev) \
@@ -37,7 +36,6 @@ struct mcde_display_device {
 	struct mcde_port *port;
 	struct fb_info   *fbi;
 	bool              fictive;
-	bool		  has_backlight;
 
 	/* MCDE dss driver internal */
 	bool initialized;
@@ -51,6 +49,7 @@ struct mcde_display_device {
 	struct mcde_chnl_state *chnl_state;
 	struct list_head ovlys;
 
+
 	/* Display driver internal */
 
 	/* Native resolution for fix resolution displays.
@@ -63,13 +62,10 @@ struct mcde_display_device {
 	enum mcde_ovly_pix_fmt default_pixel_format;
 	enum mcde_ovly_pix_fmt pixel_format;
 	enum mcde_display_rotation rotation;
-	/* The orientation of the display. i.e. how it is mounted */
 	enum mcde_display_rotation orientation;
-	/* The video mode of the display. Does not include orientation */
 	struct mcde_video_mode video_mode;
-	/* If the display is horizontal flip:ed by the DSI link */
-	bool horizontal_display_flip;
 	int update_flags;
+	bool deep_standby_as_power_off;
 	bool stay_alive;
 	int check_transparency;
 
@@ -108,8 +104,11 @@ struct mcde_display_device {
 		s64 *timestamp);
 
 	int (*apply_config)(struct mcde_display_device *dev);
-	int (*update)(struct mcde_display_device *dev);
+	int (*update)(struct mcde_display_device *dev, bool tripple_buffer);
+	int (*prepare_for_update)(struct mcde_display_device *dev,
+		u16 x, u16 y, u16 w, u16 h);
 	int (*on_first_update)(struct mcde_display_device *dev);
+	int (*platform_reset)(struct mcde_display_device *dev, bool level);
 	int (*platform_enable)(struct mcde_display_device *dev);
 	int (*platform_disable)(struct mcde_display_device *dev);
 	int (*ceanr_convert)(struct mcde_display_device *ddev,

@@ -11,9 +11,8 @@
 #ifndef __MCDE__H__
 #define __MCDE__H__
 
-
 #include "nova_dsilink.h"
-
+#include <linux/device.h>
 
 /* Physical interface types */
 enum mcde_port_type {
@@ -129,10 +128,18 @@ enum mcde_vsync_polarity {
 				   * pixel clock
 				   */
 
+/*
+ * Default values for DCS address mode.
+ * Can be overrridden in display driver.
+ */
+#define DSI_DCS_ADDR_MODE_NORMAL_DEFAULT	0x00
+#define DSI_DCS_ADDR_MODE_HOR_FLIP_DEFAULT	0x40
+
 struct mcde_port {
 	enum mcde_port_type type;
 	enum mcde_port_mode mode;
 	enum mcde_port_pix_fmt pixel_format;
+	u8 refresh_rate;	/* display refresh rate given in Hz */
 	u8 ifc;
 	u8 link;
 	enum mcde_sync_src sync_src;
@@ -156,6 +163,10 @@ struct mcde_port {
 			u32 lcd_freq;
 		} dpi;
 	} phy;
+	struct {
+		u8 normal;	/* Value for no horizontal flip */
+		u8 hor_flip;	/* Value for horizontal flip */
+	} dcs_addr_mode;
 };
 
 /* Overlay pixel formats (input) *//* REVIEW: Define byte order */
@@ -171,38 +182,30 @@ enum mcde_ovly_pix_fmt {
 
 /* Display power modes */
 enum mcde_display_power_mode {
-	MCDE_DISPLAY_PM_OFF     = 0, /* Power off */
-	MCDE_DISPLAY_PM_STANDBY = 1, /* DCS sleep mode */
-	MCDE_DISPLAY_PM_ON      = 2, /* DCS normal mode, display on */
-};
-
-/* MCDE channel rotation */
-enum mcde_hw_rotation {
-	MCDE_HW_ROT_0 = 0,
-	MCDE_HW_ROT_90_CCW,
-	MCDE_HW_ROT_90_CW,
-	MCDE_HW_ROT_VERT_MIRROR
+	MCDE_DISPLAY_PM_OFF          = 0, /* Power off */
+	MCDE_DISPLAY_PM_STANDBY      = 1, /* DCS sleep mode */
+	MCDE_DISPLAY_PM_INTERMEDIATE = 2, /* DCS normal, but display off */
+	MCDE_DISPLAY_PM_ON           = 3, /* DCS normal mode, display on */
 };
 
 /* Display rotation */
 enum mcde_display_rotation {
 	MCDE_DISPLAY_ROT_0       = 0,
 	MCDE_DISPLAY_ROT_90_CCW  = 90,
-	MCDE_DISPLAY_ROT_180     = 180,
+	MCDE_DISPLAY_ROT_180_CCW = 180,
 	MCDE_DISPLAY_ROT_270_CCW = 270,
 	MCDE_DISPLAY_ROT_90_CW   = MCDE_DISPLAY_ROT_270_CCW,
+	MCDE_DISPLAY_ROT_180_CW  = MCDE_DISPLAY_ROT_180_CCW,
 	MCDE_DISPLAY_ROT_270_CW  = MCDE_DISPLAY_ROT_90_CCW,
 };
-
-u8 mcde_get_hw_alignment(void);
 
 /* REVIEW: Verify */
 #define MCDE_MIN_WIDTH  16
 #define MCDE_MIN_HEIGHT 16
 #define MCDE_MAX_WIDTH  2048
 #define MCDE_MAX_HEIGHT 2048
-#define MCDE_BUF_START_ALIGMENT mcde_get_hw_alignment()
-#define MCDE_BUF_LINE_ALIGMENT mcde_get_hw_alignment()
+#define MCDE_BUF_START_ALIGMENT 8
+#define MCDE_BUF_LINE_ALIGMENT 8
 
 /* Tv-out defines */
 #define MCDE_CONFIG_TVOUT_BACKGROUND_LUMINANCE		0x83
@@ -233,7 +236,6 @@ struct mcde_video_mode {
 
 struct mcde_overlay_info {
 	u32 paddr;
-	void *kaddr;
 	u32 *vaddr;
 	u16 stride; /* buffer line len in bytes */
 	enum mcde_ovly_pix_fmt fmt;
@@ -267,13 +269,6 @@ struct mcde_palette_table {
 	u16 (*map_col_ch2)(u8);
 };
 
-struct mcde_oled_palette_table {
-	void *context;
-	u16 (*map_col_ch0)(u8, u8, void *);
-	u16 (*map_col_ch1)(u8, u8, void *);
-	u16 (*map_col_ch2)(u8, u8, void *);
-};
-
 struct mcde_chnl_state;
 
 struct mcde_chnl_state *mcde_chnl_get(enum mcde_chnl chnl_id,
@@ -282,20 +277,23 @@ int mcde_chnl_set_pixel_format(struct mcde_chnl_state *chnl,
 					enum mcde_port_pix_fmt pix_fmt);
 int mcde_chnl_set_palette(struct mcde_chnl_state *chnl,
 					struct mcde_palette_table *palette);
-int mcde_chnl_set_oled_palette(struct mcde_chnl_state *chnl,
-					struct mcde_oled_palette_table *palette);
 void mcde_chnl_set_col_convert(struct mcde_chnl_state *chnl,
 					struct mcde_col_transform *transform,
 					enum   mcde_col_convert    convert);
 int mcde_chnl_set_video_mode(struct mcde_chnl_state *chnl,
 					struct mcde_video_mode *vmode);
 int mcde_chnl_set_rotation(struct mcde_chnl_state *chnl,
-					enum mcde_hw_rotation hw_rot);
+					enum mcde_display_rotation rotation);
+bool mcde_chnl_is_rotated_90(struct mcde_chnl_state *chnl);
 int mcde_chnl_set_power_mode(struct mcde_chnl_state *chnl,
 				enum mcde_display_power_mode power_mode);
 
 int mcde_chnl_apply(struct mcde_chnl_state *chnl);
-int mcde_chnl_update(struct mcde_chnl_state *chnl);
+void mcde_chnl_set_dirty(struct mcde_chnl_state *chnl);
+void mcde_chnl_update_sync_src(struct mcde_chnl_state *chnl,
+				enum mcde_sync_src src);
+int mcde_chnl_update(struct mcde_chnl_state *chnl,
+			bool tripple_buffer);
 int mcde_chnl_wait_for_next_vsync(struct mcde_chnl_state *chnl, s64 *timestamp);
 void mcde_chnl_put(struct mcde_chnl_state *chnl);
 
@@ -304,13 +302,19 @@ void mcde_chnl_stop_flow(struct mcde_chnl_state *chnl);
 void mcde_chnl_enable(struct mcde_chnl_state *chnl);
 void mcde_chnl_disable(struct mcde_chnl_state *chnl);
 void mcde_formatter_enable(struct mcde_chnl_state *chnl);
+void mcde_disable_ulpm_support(bool disable);
+void mcde_extra_oled_conversion(bool enable);
+void set_rgb_extra_matrix(struct mcde_oled_transform *matrix);
+struct mcde_oled_transform *get_rgb_extra_matrix(void);
+void set_yuv_extra_matrix(struct mcde_oled_transform *matrix);
+struct mcde_oled_transform *get_yuv_extra_matrix(void);
 
 /* MCDE overlay */
 struct mcde_ovly_state;
 
 struct mcde_ovly_state *mcde_ovly_get(struct mcde_chnl_state *chnl);
 void mcde_ovly_set_source_buf(struct mcde_ovly_state *ovly,
-	u32 paddr, void *kaddr);
+	u32 paddr);
 void mcde_ovly_set_source_info(struct mcde_ovly_state *ovly,
 	u32 stride, enum mcde_ovly_pix_fmt pix_fmt);
 void mcde_ovly_set_source_area(struct mcde_ovly_state *ovly,
@@ -364,7 +368,7 @@ void mcde_ovly_put(struct mcde_ovly_state *ovly);
 #define DCS_CMD_WRITE_START           0x2C
 
 #define MCDE_MAX_DCS_READ   4
-#define MCDE_MAX_DSI_DIRECT_CMD_WRITE 160 /* Smallest FIFO in MCDE */
+#define MCDE_MAX_DSI_DIRECT_CMD_WRITE 15
 
 int mcde_dsi_generic_write(struct mcde_chnl_state *chnl, u8* para, int len);
 int mcde_dsi_dcs_write(struct mcde_chnl_state *chnl,
@@ -372,8 +376,9 @@ int mcde_dsi_dcs_write(struct mcde_chnl_state *chnl,
 int mcde_dsi_dcs_read(struct mcde_chnl_state *chnl,
 		u8 cmd, u32 *data, int *len);
 int mcde_dsi_set_max_pkt_size(struct mcde_chnl_state *chnl);
-int mcde_dsi_turn_on_peripheral(struct mcde_chnl_state *chnl);
-int mcde_dsi_shut_down_peripheral(struct mcde_chnl_state *chnl);
+
+void mcde_hw_chnl_print(struct mcde_chnl_state *chnl);
+void mcde_hw_ovly_print(struct mcde_ovly_state *ovly);
 
 /* MCDE */
 
