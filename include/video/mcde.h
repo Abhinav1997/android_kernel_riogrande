@@ -279,6 +279,13 @@ struct mcde_palette_table {
 	u16 (*map_col_ch2)(u8);
 };
 
+struct mcde_oled_palette_table {
+	void *context;
+	u16 (*map_col_ch0)(u8, u8, void *);
+	u16 (*map_col_ch1)(u8, u8, void *);
+	u16 (*map_col_ch2)(u8, u8, void *);
+}
+
 struct mcde_chnl_state;
 
 struct mcde_chnl_state *mcde_chnl_get(enum mcde_chnl chnl_id,
@@ -287,13 +294,15 @@ int mcde_chnl_set_pixel_format(struct mcde_chnl_state *chnl,
 					enum mcde_port_pix_fmt pix_fmt);
 int mcde_chnl_set_palette(struct mcde_chnl_state *chnl,
 					struct mcde_palette_table *palette);
+int mcde_chnl_set_oled_palette(struct mcde_chnl_state *chnl,
+					struct mcde_oled_palette_table *palette);
 void mcde_chnl_set_col_convert(struct mcde_chnl_state *chnl,
 					struct mcde_col_transform *transform,
 					enum   mcde_col_convert    convert);
 int mcde_chnl_set_video_mode(struct mcde_chnl_state *chnl,
 					struct mcde_video_mode *vmode);
 int mcde_chnl_set_rotation(struct mcde_chnl_state *chnl,
-					enum mcde_display_rotation rotation);
+					enum mcde_hw_rotation hw_rot);
 bool mcde_chnl_is_rotated_90(struct mcde_chnl_state *chnl);
 int mcde_chnl_set_power_mode(struct mcde_chnl_state *chnl,
 				enum mcde_display_power_mode power_mode);
