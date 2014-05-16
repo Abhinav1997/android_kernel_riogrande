@@ -3470,6 +3470,11 @@ int mcde_chnl_set_rotation(struct mcde_chnl_state *chnl,
 	return 0;
 }
 
+bool mcde_chnl_is_rotated_90(struct mcde_chnl_state *chnl)
+{
+		return true;
+}
+
 int mcde_chnl_set_power_mode(struct mcde_chnl_state *chnl,
 				enum mcde_display_power_mode power_mode)
 {
@@ -3505,6 +3510,28 @@ int mcde_chnl_apply(struct mcde_chnl_state *chnl)
 	trace_update(chnl->id, false);
 
 	return ret;
+}
+
+void mcde_chnl_set_dirty(struct mcde_chnl_state *chnl)
+{
+	dev_vdbg(&mcde_dev->dev, "%s\n", __func__);
+
+	if (!chnl->reserved)
+		return;
+
+	mcde_lock(__func__, __LINE__);
+	chnl->regs.dirty = true;
+	mcde_unlock(__func__, __LINE__);
+
+	dev_vdbg(&mcde_dev->dev, "%s exit\n", __func__);
+}
+
+void mcde_chnl_update_sync_src(struct mcde_chnl_state *chnl,
+			       enum mcde_sync_src src)
+{
+	mcde_lock(__func__, __LINE__);
+	chnl->port.sync_src = src;
+	mcde_unlock(__func__, __LINE__);
 }
 
 int mcde_chnl_update(struct mcde_chnl_state *chnl,
