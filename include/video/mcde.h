@@ -188,10 +188,19 @@ enum mcde_display_power_mode {
 	MCDE_DISPLAY_PM_ON           = 3, /* DCS normal mode, display on */
 };
 
+/* MCDE channel rotation */
+enum mcde_hw_rotation {
+	MCDE_HW_ROT_0 = 0,
+	MCDE_HW_ROT_90_CCW,
+	MCDE_HW_ROT_90_CW,
+	MCDE_HW_ROT_VERT_MIRROR
+};
+
 /* Display rotation */
 enum mcde_display_rotation {
 	MCDE_DISPLAY_ROT_0       = 0,
 	MCDE_DISPLAY_ROT_90_CCW  = 90,
+	MCDE_DISPLAY_ROT_180	 = 180,
 	MCDE_DISPLAY_ROT_180_CCW = 180,
 	MCDE_DISPLAY_ROT_270_CCW = 270,
 	MCDE_DISPLAY_ROT_90_CW   = MCDE_DISPLAY_ROT_270_CCW,
@@ -236,6 +245,7 @@ struct mcde_video_mode {
 
 struct mcde_overlay_info {
 	u32 paddr;
+	void *kaddr;
 	u32 *vaddr;
 	u16 stride; /* buffer line len in bytes */
 	enum mcde_ovly_pix_fmt fmt;
@@ -314,7 +324,7 @@ struct mcde_ovly_state;
 
 struct mcde_ovly_state *mcde_ovly_get(struct mcde_chnl_state *chnl);
 void mcde_ovly_set_source_buf(struct mcde_ovly_state *ovly,
-	u32 paddr);
+	u32 paddr, void *kaddr);
 void mcde_ovly_set_source_info(struct mcde_ovly_state *ovly,
 	u32 stride, enum mcde_ovly_pix_fmt pix_fmt);
 void mcde_ovly_set_source_area(struct mcde_ovly_state *ovly,
