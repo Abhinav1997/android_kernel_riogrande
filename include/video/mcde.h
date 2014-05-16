@@ -284,7 +284,7 @@ struct mcde_oled_palette_table {
 	u16 (*map_col_ch0)(u8, u8, void *);
 	u16 (*map_col_ch1)(u8, u8, void *);
 	u16 (*map_col_ch2)(u8, u8, void *);
-}
+};
 
 struct mcde_chnl_state;
 

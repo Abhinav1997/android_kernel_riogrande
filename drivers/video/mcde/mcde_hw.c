@@ -3507,7 +3507,8 @@ int mcde_chnl_apply(struct mcde_chnl_state *chnl)
 	return ret;
 }
 
-int mcde_chnl_update(struct mcde_chnl_state *chnl)
+int mcde_chnl_update(struct mcde_chnl_state *chnl,
+					bool tripple_buffer)
 {
 	int ret;
 	dev_vdbg(&mcde_dev->dev, "%s\n", __func__);

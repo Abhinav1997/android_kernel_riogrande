@@ -240,7 +240,7 @@ void mcde_dss_disable_overlay(struct mcde_overlay *ovly)
 }
 EXPORT_SYMBOL(mcde_dss_disable_overlay);
 
-int mcde_dss_update_overlay(struct mcde_overlay *ovly)
+int mcde_dss_update_overlay(struct mcde_overlay *ovly, bool tripple_buffer)
 {
 	int ret;
 	dev_vdbg(&ovly->ddev->dev, "Overlay update, chnl=%d\n",
@@ -256,7 +256,7 @@ int mcde_dss_update_overlay(struct mcde_overlay *ovly)
 		goto power_mode_off;
 	}
 
-	ret = ovly->ddev->update(ovly->ddev);
+	ret = ovly->ddev->update(ovly->ddev, tripple_buffer);
 	if (ret)
 		goto update_failed;
 

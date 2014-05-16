@@ -610,7 +610,7 @@ static int compdev_blt(struct compdev *cd,
 
 static int compdev_post_buffers_dss(struct dss_context *dss_ctx,
 		struct compdev_img *img1, struct compdev_img *img2,
-		enum compdev_transform mcde_transform)
+		bool tripple_buffer, enum compdev_transform mcde_transform)
 {
 	int ret = 0;
 	int i = 0;
@@ -693,7 +693,8 @@ static int compdev_post_buffers_dss(struct dss_context *dss_ctx,
 	/* Do the display update */
 	for (i = 0; i < 2; i++) {
 		if (update_ovly[i]) {
-			mcde_dss_update_overlay(dss_ctx->ovly[i]);
+			mcde_dss_update_overlay(dss_ctx->ovly[i],
+					tripple_buffer);
 			break;
 		}
 	}
@@ -719,11 +720,11 @@ static void compdev_display_worker_function(struct work_struct *w)
 
 	if (dw->img_count == 1)
 		compdev_post_buffers_dss(dw->dss_ctx,
-				&dw->img1, NULL,
+				&dw->img1, NULL, false,
 				dw->mcde_transform);
 	else if (dw->img_count == 2)
 		compdev_post_buffers_dss(dw->dss_ctx,
-				&dw->img1, &dw->img2,
+				&dw->img1, &dw->img2, false,
 				dw->mcde_transform);
 
 	if (dw->img1_alloc != NULL) {
@@ -1049,7 +1050,7 @@ static int compdev_post_buffer_locked(struct compdev *cd,
 
 			/* Do the refresh */
 			compdev_post_buffers_dss(&cd->dss_ctx,
-					img[0], img[1], cd->mcde_transform);
+				img[0], img[1], true, cd->mcde_transform);
 
 			/*
 			 * Free references to the temp buffers,
@@ -1207,7 +1208,7 @@ static int compdev_clear_screen_locked(struct compdev *cd)
 	/* disable all overlays and refresh update screen */
 	disable_overlay(cd->dss_ctx.ovly[0]);
 	disable_overlay(cd->dss_ctx.ovly[1]);
-	mcde_dss_update_overlay(cd->dss_ctx.ovly[0]);
+	mcde_dss_update_overlay(cd->dss_ctx.ovly[0], false);
 
 	return 0;
 }

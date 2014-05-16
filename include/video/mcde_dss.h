@@ -32,7 +32,7 @@ int mcde_dss_apply_overlay(struct mcde_overlay *ovl,
 						struct mcde_overlay_info *info);
 void mcde_dss_get_overlay_info(struct mcde_overlay *ovly,
 				struct mcde_overlay_info *info);
-int mcde_dss_update_overlay(struct mcde_overlay *ovl);
+int mcde_dss_update_overlay(struct mcde_overlay *ovl, bool tripple_buffer);
 
 void mcde_dss_get_native_resolution(struct mcde_display_device *ddev,
 	u16 *x_res, u16 *y_res);
