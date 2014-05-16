@@ -349,11 +349,12 @@ static int mcde_display_apply_config_default(struct mcde_display_device *ddev)
 	return 0;
 }
 
-static int mcde_display_update_default(struct mcde_display_device *ddev)
+static int mcde_display_update_default(struct mcde_display_device *ddev,
+							bool tripple_buffer)
 {
 	int ret = 0;
 
-	ret = mcde_chnl_update(ddev->chnl_state);
+	ret = mcde_chnl_update(ddev->chnl_state, tripple_buffer);
 
 	if (ret < 0) {
 		dev_warn(&ddev->dev, "%s:Failed to update channel\n", __func__);

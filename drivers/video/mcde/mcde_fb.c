@@ -542,14 +542,13 @@ static int apply_var(struct fb_info *fbi, struct mcde_display_device *ddev)
 	for (i = 0; i < mfb->num_ovlys; i++) {
 		struct mcde_overlay *ovly = mfb->ovlys[i];
 		struct mcde_overlay_info info;
+		int num_buffers;
 
 		get_ovly_info(fbi, ovly, &info);
-		ret = mcde_dss_apply_overlay(ovly, &info);
-		if (ret)
-			return ret;
-		ret = mcde_dss_update_overlay(ovly);
-		if (ret)
-			return ret;
+		(void) mcde_dss_apply_overlay(ovly, &info);
+
+		num_buffers = var->yres_virtual / var->yres;
+		mcde_dss_update_overlay(ovly, num_buffers == 3);
 	}
 
 apply_var_end:
@@ -672,12 +671,14 @@ static int mcde_fb_pan_display(struct fb_var_screeninfo *var,
 		for (i = 0; i < mfb->num_ovlys; i++) {
 			struct mcde_overlay *ovly = mfb->ovlys[i];
 			struct mcde_overlay_info info;
+			int num_buffers;
 
 			get_ovly_info(fbi, ovly, &info);
 			if (mcde_dss_apply_overlay(ovly, &info))
 				ret = -1;
 
-			if (mcde_dss_update_overlay(ovly))
+			num_buffers = var->yres_virtual / var->yres;
+			if (mcde_dss_update_overlay(ovly, num_buffers == 3))
 				ret = -2;
 		}
 	} else {

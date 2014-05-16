@@ -64,6 +64,7 @@ struct mcde_display_device {
 	enum mcde_display_rotation rotation;
 	enum mcde_display_rotation orientation;
 	struct mcde_video_mode video_mode;
+	bool horizontal_display_flip;
 	int update_flags;
 	bool deep_standby_as_power_off;
 	bool stay_alive;
